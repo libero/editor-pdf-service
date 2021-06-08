@@ -1,0 +1,4 @@
+# By default, ignore everything except the contents of the 'src' and 'test' directories.
+/*
+!/src
+!/test
