@@ -24,4 +24,5 @@ By default the service should now be available at `http://localhost:4000` and an
 
 The service can be configured through the use of environment variables. 
 
-- `PORT` port the service is exposed on (default : 4000) 
+- `ARTICLE_STORE_PATH` - partial path for reaching the `editor-article-store`. This has the requests `articleId` param appended to it to make a HEAD request before starting generation job. (default : `http://localhost:8080/articles/`)
+- `PORT` - port the service is exposed on (default : `4000`) 
