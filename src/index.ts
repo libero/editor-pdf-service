@@ -6,6 +6,7 @@ import GenerateService from './services/generate';
 const config = {
     port: process.env.PORT || 4000,
     articleStorePath: process.env.ARTICLE_STORE_PATH || 'http://localhost:8080/articles/',
+    generationJobStatusURL: process.env.GENERATION_STATUS_URL || 'http://localhost:80',
 };
 
 console.log('Starting server...');
@@ -35,6 +36,15 @@ app.post('/generate/:articleId', async (req, res) => {
     }
 
     res.sendStatus(200);
+});
+app.get('/status/:jobId', async (req, res) => {
+    try {
+        const status = await generationService.getJobStatus(req.params.jobId);
+        res.status(200).send(status);
+        return;
+    } catch (error) {
+        res.sendStatus(500);
+    }
 });
 
 const server = app.listen(config.port, () => {
