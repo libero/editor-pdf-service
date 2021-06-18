@@ -4,8 +4,11 @@ import GenerateService from './services/generate';
 
 //TODO: replace with injectable / importable config object
 const config = {
-    port: process.env.PORT || 4000,
+    port: process.env.PORT || 4001,
     articleStorePath: process.env.ARTICLE_STORE_PATH || 'http://localhost:8080/articles/',
+    generationJobResourcesPath: process.env.GENERATION_RESOURCES_PATH || 'http://localhost:3000/api/v1/articles',
+    generationJobStartURL: process.env.GENERATION_START_URL || 'http://localhost:80',
+    generaionJobApiKey: process.env.GENERATION_API_KEY || 'mySuperSecretApiKey',
 };
 
 console.log('Starting server...');
@@ -21,7 +24,9 @@ app.use(logRequest);
 app.get('/health', (_, res) => res.sendStatus(200));
 app.post('/generate/:articleId', async (req, res) => {
     try {
-        await generationService.startJob(req.params.articleId);
+        const jobId = await generationService.startJob(req.params.articleId);
+        res.status(200).send(jobId);
+        return;
     } catch (error) {
         switch (error.message) {
             case 'NotFound':
@@ -33,8 +38,6 @@ app.post('/generate/:articleId', async (req, res) => {
         }
         return;
     }
-
-    res.sendStatus(200);
 });
 
 const server = app.listen(config.port, () => {

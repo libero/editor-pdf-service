@@ -23,9 +23,11 @@ describe('server', () => {
     });
 
     describe('/generate/:id', () => {
-        it('responds 200 when startJob successful', async () => {
-            await request(server).post('/generate/someId').expect(200);
+        it('responds 200 when startJob successful and returns jobid', async () => {
+            startJobMock.mockImplementation(() => 'someJobid');
+            const response = await request(server).post('/generate/someId').expect(200);
             expect(startJobMock).toBeCalledWith('someId');
+            expect(response.text).toBe('someJobid');
         });
         it('responds 404 when startJob throws NotFound', async () => {
             startJobMock.mockImplementation(() => {
