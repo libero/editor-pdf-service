@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 
 interface GenerateService {
     startJob: (id: string) => Promise<string>;
+    getJobStatus: (jobId: string) => Promise<string>;
 }
 
 type StartGenerationJobResponseBody = {
@@ -11,6 +12,15 @@ type StartGenerationJobResponseBody = {
     };
     message: {
         jobid: string;
+    };
+};
+
+type GenerationJobStatusResponseBody = {
+    status: {
+        code: number;
+        message: {
+            status: string;
+        };
     };
 };
 
@@ -48,5 +58,15 @@ export default (config: Record<string, unknown>): GenerateService => ({
         }
 
         throw new Error('Start generation job failed - code: ' + body.status.code + ' message: ' + body.status.message);
+    },
+    getJobStatus: async (jobId: string) => {
+        const params = new URLSearchParams();
+        params.append('id', jobId);
+        const jobStatusResponse = await fetch(config['generationJobStatusURL'] as string, {
+            method: 'POST',
+            body: params,
+        });
+        const body: GenerationJobStatusResponseBody = await jobStatusResponse.json();
+        return body.status.message.status;
     },
 });

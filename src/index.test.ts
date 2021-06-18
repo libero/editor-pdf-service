@@ -2,8 +2,10 @@ import { Server } from 'http';
 import request from 'supertest';
 
 const startJobMock = jest.fn();
+const getJobStatusMock = jest.fn();
 jest.mock('./services/generate', () => () => ({
     startJob: startJobMock,
+    getJobStatus: getJobStatusMock,
 }));
 
 describe('server', () => {
@@ -11,12 +13,13 @@ describe('server', () => {
     beforeEach(() => {
         server = require('./index');
         startJobMock.mockReset();
+        getJobStatusMock.mockReset();
     });
     afterEach(() => {
         server.close();
     });
 
-    describe('/health', () => {
+    describe('GET /health', () => {
         it('responds to request', (done) => {
             request(server).get('/health').expect(200, done);
         });
@@ -40,6 +43,21 @@ describe('server', () => {
                 throw new Error('SomeOtherError');
             });
             await request(server).post('/generate/someId').expect(500);
+        });
+    });
+
+    describe('GET /status/:jobId', () => {
+        it('responds 200 when getJobStatus successful and returns status', async () => {
+            getJobStatusMock.mockImplementation(() => 'completed');
+            const response = await request(server).get('/status/someId').expect(200);
+            expect(getJobStatusMock).toBeCalledWith('someId');
+            expect(response.text).toBe('completed');
+        });
+        it('responds 500 when getJobStatus throws', async () => {
+            getJobStatusMock.mockImplementation(() => {
+                throw new Error('SomeError');
+            });
+            await request(server).get('/status/someId').expect(500);
         });
     });
 });

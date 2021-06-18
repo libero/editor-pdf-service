@@ -29,3 +29,79 @@ The service can be configured through the use of environment variables.
 - `GENERATION_START_URL` - POST request is made with relevent urlencoded form data to this URL to start the PDF generation job (default : `http://localhost:80`)
 - `GENERATION_API_KEY` - API key to be sent with start job and status requests (default : `mySuperSecretApiKey`)
 - `PORT` - port the service is exposed on (default : `4001`) 
+
+## API
+
+### POST  `/generate/${articleId}`
+
+Used to begin the PDF generation task and returns a `jobId` which can be used to query the tasks status.
+
+**Path Params**: `articleId` should be the ID of an article found within the targeted `editor-article-store`
+
+**Success Response**: 
+```
+  {
+    "status: {
+      "code": 200,
+      "message": "OK"
+    },
+    "body": "1111-1111-1111-1111"
+  }
+```
+
+
+
+**No article found error response**:
+```
+  {
+    "status: {
+      "code": 404,
+      "message": "Not Found"
+    }
+  }
+```
+
+**Failed to start job error response**:
+```
+  {
+    "status: {
+      "code": 500,
+      "message": "Internal Error"
+    }
+  }
+```
+
+### GET  `/status/${jobId}`
+
+Used to check the status of a PDF generation task and returns a status reference
+
+**Path Params**: `jobId` should be the ID returned from the `POST /generate/${articleId}` request.
+
+**Success Response**: 
+```
+  {
+    "status: {
+      "code": 200,
+      "message": "OK"
+    },
+    "body": "complete"
+  }
+```
+
+Possible status options are:
+
+- `"YTS"` - yet to start 
+- `"in-progress"` - the request is in progress
+- `"completed"` - request was completed with the expected result 
+- `"failed"` - request task failed 
+
+
+**Get status error response**:
+```
+  {
+    "status: {
+      "code": 500,
+      "message": "Internal Error"
+    }
+  }
+```

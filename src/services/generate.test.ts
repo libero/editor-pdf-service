@@ -6,7 +6,9 @@ describe('GenerateService', () => {
     it('initializes without error', () => {
         expect(() => GenerateService({})).not.toThrow();
     });
-
+    beforeEach(() => {
+        (fetch as unknown as jest.Mock).mockReset();
+    });
     describe('startJob', () => {
         beforeEach(() => {
             (fetch as unknown as jest.Mock).mockReset();
@@ -52,6 +54,25 @@ describe('GenerateService', () => {
             expect((fetch as unknown as jest.Mock).mock.calls[1][1].body.toString()).toBe(
                 'client=elife-libero&id=elife.11111&idType=doi&processType=InDesignSetter&project=elife-libero&proof=online&proofingVersion=v2.0&siteName=generationJobResourcesPath%2F11111&proofingEngine=InDesignSetter&apiKey=someApiKey',
             );
+        });
+    });
+    describe('getJobStatus', () => {
+        it('returns the message status from job status request response', async () => {
+            (fetch as unknown as jest.Mock).mockImplementation(() => {
+                return { json: () => ({ status: { message: { status: 'someStatusCode' } } }) };
+            });
+            await expect(GenerateService({}).getJobStatus('11111')).resolves.toBe('someStatusCode');
+        });
+        it('sends job status request with expected encodedform values', async () => {
+            (fetch as unknown as jest.Mock).mockImplementation(() => {
+                return { json: () => ({ status: { message: { status: 'someStatusCode' } } }) };
+            });
+            await GenerateService({
+                generationJobStatusURL: 'jobstatusUrl',
+            }).getJobStatus('11111');
+            expect((fetch as unknown as jest.Mock).mock.calls[0][0]).toBe('jobstatusUrl');
+            expect((fetch as unknown as jest.Mock).mock.calls[0][1].body).toBeInstanceOf(URLSearchParams);
+            expect((fetch as unknown as jest.Mock).mock.calls[0][1].body.toString()).toBe('id=11111');
         });
     });
 });
