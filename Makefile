@@ -1,4 +1,4 @@
-.PHONY: start start_dev
+.PHONY: build start start_dev
 
 IMAGE_TAG ?= local
 
