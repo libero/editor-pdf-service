@@ -30,6 +30,7 @@ jobs:
         run: |
           npm run test
   build-and-push:
+    needs: [test-and-lint]
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
