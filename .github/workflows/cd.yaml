@@ -9,6 +9,9 @@ on:
     tags:
       - '*'
 
+env:
+  IMAGE_TAG: ${{ github.sha }}
+
 jobs:
   test-and-lint:
     runs-on: ubuntu-18.04
@@ -26,3 +29,32 @@ jobs:
       - name: Unit Test
         run: |
           npm run test
+  build-and-push:
+    needs: [test-and-lint]
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Build and Publish as 'unstable'
+        if: github.ref == 'refs/heads/master'
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker build --no-cache -t libero/$REPO_NAME:unstable -t $DOCKER_USERNAME/$REPO_NAME:unstable .
+          docker push $DOCKER_USERNAME/$REPO_NAME:unstable
+          .scripts/github/retag-and-push.sh $REPO_NAME unstable
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and Publish as 'stable'
+        if: contains(github.ref, 'refs/tags/v')
+        run: |
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker build --no-cache -t libero/$REPO_NAME:stable -t $DOCKER_USERNAME/$REPO_NAME:stable .
+          docker push $DOCKER_USERNAME/$REPO_NAME:stable
+          .scripts/github/retag-and-push.sh $REPO_NAME stable
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
