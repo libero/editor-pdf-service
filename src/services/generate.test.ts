@@ -47,12 +47,12 @@ describe('GenerateService', () => {
             });
             await GenerateService({
                 articleStorePath: 'someUrl/',
-                generationJobResourcesPath: 'generationJobResourcesPath/',
+                editorURL: 'editorURL',
                 generaionJobApiKey: 'someApiKey',
             }).startJob('11111');
             expect((fetch as unknown as jest.Mock).mock.calls[1][1].body).toBeInstanceOf(URLSearchParams);
             expect((fetch as unknown as jest.Mock).mock.calls[1][1].body.toString()).toBe(
-                'client=elife-libero&id=elife.11111&idType=doi&processType=InDesignSetter&project=elife-libero&proof=online&proofingVersion=v2.0&siteName=generationJobResourcesPath%2F11111&proofingEngine=InDesignSetter&apiKey=someApiKey',
+                'client=elife-libero&id=11111&idType=doi&processType=InDesignSetter&project=elife-libero&proof=online&proofingVersion=v2.0&siteName=editorURL&proofingEngine=InDesignSetter&apiKey=someApiKey',
             );
         });
     });

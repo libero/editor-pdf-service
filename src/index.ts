@@ -6,8 +6,8 @@ import GenerateService from './services/generate';
 const config = {
     port: process.env.PORT || 4001,
     articleStorePath: process.env.ARTICLE_STORE_PATH || 'http://localhost:8080/articles/',
+    editorURL: process.env.EDITOR_URL || 'http://localhost:4000',
     generationJobStatusURL: process.env.GENERATION_STATUS_URL || 'http://localhost:80',
-    generationJobResourcesPath: process.env.GENERATION_RESOURCES_PATH || 'http://localhost:3000/api/v1/articles',
     generationJobStartURL: process.env.GENERATION_START_URL || 'http://localhost:80',
     generaionJobApiKey: process.env.GENERATION_API_KEY || 'mySuperSecretApiKey',
 };

@@ -34,13 +34,13 @@ export default (config: Record<string, unknown>): GenerateService => ({
         const params = new URLSearchParams();
         // TODO: We probably want to make more of these options configurable
         params.append('client', 'elife-libero');
-        params.append('id', `elife.${id}`);
+        params.append('id', id);
         params.append('idType', 'doi');
         params.append('processType', 'InDesignSetter');
         params.append('project', 'elife-libero');
         params.append('proof', 'online');
         params.append('proofingVersion', 'v2.0');
-        params.append('siteName', `${config['generationJobResourcesPath']}${id}`);
+        params.append('siteName', `${config['editorURL']}`);
         params.append('proofingEngine', 'InDesignSetter');
         params.append('apiKey', `${config['generaionJobApiKey']}`);
         // OPTIONAL - omitting this generates regular pdf
