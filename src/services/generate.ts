@@ -27,6 +27,7 @@ type GenerationJobStatusResponseBody = {
 export default (config: Record<string, unknown>): GenerateService => ({
     startJob: async (id: string): Promise<string> => {
         const articleResponse = await fetch(config['articleStorePath'] + id, { method: 'HEAD' });
+
         if (articleResponse.status === 404) {
             throw new Error('NotFound');
         }
@@ -46,7 +47,7 @@ export default (config: Record<string, unknown>): GenerateService => ({
         // OPTIONAL - omitting this generates regular pdf
         // params.append('pdfType', 'figure')
 
-        const startJobResponse = await fetch(config['startGenerationJobURL'] as string, {
+        const startJobResponse = await fetch(config['generationJobStartURL'] as string, {
             method: 'POST',
             body: params,
         });
