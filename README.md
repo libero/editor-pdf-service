@@ -20,6 +20,8 @@ make start_dev
 
 By default the service should now be available at `http://localhost:4001` and any changes made to files within the `/dev` directory will be picked up and cause the service to restart.
 
+When in dev mode the application relies on [`mockserver`](https://www.mock-server.com/) to provide mocked responses to external requests. These responses can be configured [here](.mockServer/initializerJson.json) to change expected behaviour.
+
 ## Configuration
 
 The service can be configured through the use of environment variables. 

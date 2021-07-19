@@ -3,11 +3,12 @@
 IMAGE_TAG ?= local
 
 build:
-	docker build --no-cache -t editor-pdf-service:${IMAGE_TAG} .
+	docker-compose build editor-pdf-service
 
 start:
-	npm run build
-	npm start
+	RUN_ENV=prod ${MAKE} build
+	docker-compose up -d
 
 start_dev:
-	npm run dev
+	RUN_ENV=dev ${MAKE} build
+	docker-compose up -d

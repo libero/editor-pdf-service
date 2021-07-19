@@ -14,6 +14,8 @@ RUN npm install
 
 COPY src/ src/
 
+CMD ["npm", "run", "dev"]
+
 #
 # Stage: Production build
 #

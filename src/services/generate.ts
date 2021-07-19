@@ -47,6 +47,7 @@ export default (config: Record<string, unknown>): GenerateService => ({
         // OPTIONAL - omitting this generates regular pdf
         // params.append('pdfType', 'figure')
 
+        console.log("DID WE MAKE IT HERE??????");
         const startJobResponse = await fetch(config['generationJobStartURL'] as string, {
             method: 'POST',
             body: params,

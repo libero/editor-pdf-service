@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  mockServer:
+    image: mockserver/mockserver:mockserver-5.11.1
+    container_name: ${PREFIX-editor}-mock-service
+    ports:
+      - 1080:1080
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializerJson.json
+    volumes:
+          - './.mockserver:/config:ro'
+  editor-pdf-service:
+    build:
+      context: './'
+      target: ${RUN_ENV:-prod}
+    image: editor-pdf-service:${IMAGE_TAG:-local}
+    environment: 
+      - ARTICLE_STORE_PATH=http://editor-mock-service:1080/articles/
+      - GENERATION_STATUS_URL=http://editor-mock-service:1080/pdf-generation/status
+      - GENERATION_START_URL=http://editor-mock-service:1080/pdf-generation/start
+    ports:
+      - 4001:4001
+    volumes:
+      - ./src/:/app/src
