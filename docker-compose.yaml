@@ -13,11 +13,11 @@ services:
     build:
       context: './'
       target: ${RUN_ENV:-prod}
-    image: editor-pdf-service:${IMAGE_TAG:-local}
+    image: ${PREFIX-editor}-pdf-service:${IMAGE_TAG:-local}
     environment: 
-      - ARTICLE_STORE_PATH=http://editor-mock-service:1080/articles/
-      - GENERATION_STATUS_URL=http://editor-mock-service:1080/pdf-generation/status
-      - GENERATION_START_URL=http://editor-mock-service:1080/pdf-generation/start
+      - ARTICLE_STORE_PATH=http://${PREFIX-editor}-mock-service:1080/articles/
+      - GENERATION_STATUS_URL=http://${PREFIX-editor}-mock-service:1080/pdf-generation/status
+      - GENERATION_START_URL=http://${PREFIX-editor}-service:1080/pdf-generation/start
     ports:
       - 4001:4001
     volumes:
