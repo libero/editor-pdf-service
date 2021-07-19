@@ -21,7 +21,6 @@ const app: express.Application = express();
 
 // Log all requests on this route.
 app.use(logRequest);
-
 app.get('/health', (_, res) => res.sendStatus(200));
 app.post('/generate/:articleId', async (req, res) => {
     try {
