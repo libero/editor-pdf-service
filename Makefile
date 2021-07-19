@@ -3,12 +3,12 @@
 IMAGE_TAG ?= local
 
 build:
-	docker-compose build editor-pdf-service
+	IMAGE_TAG=${IMAGE_TAG} docker-compose build editor-pdf-service
 
 start:
 	RUN_ENV=prod ${MAKE} build
-	docker-compose up -d
+	IMAGE_TAG=${IMAGE_TAG} docker-compose up -d
 
 start_dev:
 	RUN_ENV=dev ${MAKE} build
-	docker-compose up -d
+	IMAGE_TAG=${IMAGE_TAG} docker-compose up -d
